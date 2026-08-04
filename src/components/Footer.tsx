@@ -281,7 +281,7 @@ const innerrenderMenu = (items: any[], level = 0) => (
         {/* Bottom Panel */}
         <div className="mt-12 border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500" id="footer-bottom">
           <p>© {currentYear} Flumix Data Consulting Ltd. All rights reserved.</p>
-          <p>Registered in England & Wales.</p>
+          <p>Registered in England & Wales. Company No. 17378915.</p>
           <div className="flex gap-6">
             <button onClick={() => handleNavClick('privacy')} className="hover:text-slate-700">Privacy Policy</button>
             <button onClick={() => handleNavClick('terms')} className="hover:text-slate-700">Terms of Service</button>
