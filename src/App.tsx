@@ -24,7 +24,6 @@ import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import { Analytics } from '@vercel/analytics/next';
 import ComingSoon from './components/ComingSoon';
-import live from '../public/siteStatus.json';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
@@ -146,4 +145,3 @@ export default function App() {
     </div>
   );
 }
-

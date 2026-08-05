@@ -1,37 +1,7 @@
 'use client';
-import { useEffect, useState } from "react";
 
-export default function ComingSoon() {
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+export default function ComingSoon():any {
 
-
-  useEffect(() => {
-    const target = new Date();
-    target.setDate(target.getDate() + 1);
-    target.setHours(0, 0, 0, 0);
-
-    const timer = setInterval(() => {
-      const now = new Date();
-      const distance = target.getTime() - now.getTime();
-
-      if (distance <= 0) {
-        clearInterval(timer);
-        return;
-      }
-
-      setTimeLeft({
-        hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((distance / (1000 * 60)) % 60),
-        seconds: Math.floor((distance / 1000) % 60),
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <main className="relative flex min-h-screen py-10 items-center justify-center overflow-hidden bg-[#030712] px-6">
