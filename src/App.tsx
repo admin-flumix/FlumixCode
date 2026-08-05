@@ -106,9 +106,10 @@ export default function App() {
     }
   };
 
-  const [isLive, setIsLive] = useState<boolean | null>(false);
+  const [isLive, setIsLive] = useState<boolean | null>(true);
 
-  useEffect(() => {
+  return !isLive ? <ComingSoon /> : (
+    <div className={`flex min-h-screen flex-col transition-colors durati  useEffect(() => {
     const loadStatus = async () => {
       try {
         const res = await fetch("/api/goLive");
@@ -124,8 +125,7 @@ export default function App() {
     loadStatus();
   }, []);
 
-  return !isLive ? <ComingSoon /> : (
-    <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
+on-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
       {/* Upper ambient background light */}
       <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none transition-opacity duration-500 ${theme === 'dark' ? 'bg-gradient-to-b from-blue-950/20 via-indigo-950/5 to-transparent' : 'bg-gradient-to-b from-blue-100/30 via-indigo-50/10 to-transparent'}`} />
 
