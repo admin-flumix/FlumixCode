@@ -61,10 +61,9 @@ export default async function handler(req:any, res:any) {
   if (transporter) {
     try {
       await transporter.sendMail({
-        from: `"${firstName} ${lastName} (Flumix Quick Inquiry)" <${process.env.SENDER_USER}>`,
+        from: `Flumix <${process.env.GMAIL_USER}>`,
         to: process.env.SENDER_USER,
-        replyTo: email,
-        subject: `[Flumix Quick Consultation] ${firstName} ${lastName} - ${jobTitle || "No Job Title Provided"}`,
+        subject: `Quick Consultation Request from Flumix`,
         html: emailHtml,
       });
       return res.status(200).json({ success: true, message: "Quick request transmitted successfully via SMTP." });

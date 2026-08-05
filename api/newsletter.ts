@@ -48,8 +48,7 @@ export default async function handler(req:any, res:any) {
         await transporter.sendMail({
             from: `"Flumix Publications" <${process.env.SENDER_USER}>`,
             to: process.env.SENDER_USER,
-            replyTo: email,
-            subject: `[Flumix Newsletter Signup] ${email}`,
+            subject: `Flumix Newsletter Signup`,
             html: emailHtml,
         });
         return res.status(200).json({ success: true, message: "Newsletter signup recorded and transmitted successfully." });

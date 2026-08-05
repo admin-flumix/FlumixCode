@@ -104,8 +104,7 @@ export default async function handler(req:any, res:any) {
       await transporter.sendMail({
         from: `"${clientName} (Flumix Squad Reservation)" <${process.env.SENDER_USER}>`,
         to: process.env.SENDER_USER,
-        replyTo: clientEmail,
-        subject: `[Flumix Squad Plan Reservation] ${clientName} - ${companyName}`,
+        subject: `[Flumix Squad Plan Reservation]`,
         html: emailHtml,
       });
       return res.status(200).json({ success: true, message: "Squad reservation transmitted successfully via SMTP." });
