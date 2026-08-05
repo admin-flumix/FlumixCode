@@ -23,6 +23,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import { Analytics } from '@vercel/analytics/next';
+import ComingSoon from './components/ComingSoon';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');

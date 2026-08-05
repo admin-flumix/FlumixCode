@@ -7,7 +7,6 @@ import TechEcosystem from '../components/TechEcosystem';
 import MathAnimation from '../components/MathAnimation';
 import { ArrowRight, Database, Cpu, Sparkles, BarChart3, Cloud, Users, ArrowUpRight, MessageSquare, Shield, Check, Calendar, Clock, Star, ShieldCheck, CheckCircle2, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
-import ComingSoon from '../components/ComingSoon';
 
 interface HomeProps {
   setCurrentPage: (page: PageId) => void;
