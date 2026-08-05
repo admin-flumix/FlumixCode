@@ -1,14 +1,5 @@
-// import fs from "fs";
-// import path from "path";
-
-// export default function handler(req: any, res: any) {
-//   console.log("Go Live API called");
-//   const file = path.join(process.cwd(), "public", "siteStatus.json");
-
-//   fs.writeFileSync(
-//     file,
-//     JSON.stringify({ live: true }, null, 2)
-//   );
-
-//   res.json({ success: true });
-// }
+export default async function handler(req: any, res: any) {
+  return res.status(200).json({
+    live: process.env.VITE_PUBLIC_SITE_LIVE === "true",
+  });
+}

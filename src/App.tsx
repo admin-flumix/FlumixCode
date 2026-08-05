@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageId } from './types';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -106,10 +106,24 @@ export default function App() {
     }
   };
 
-  const isLive = process.env.VITE_PUBLIC_SITE_LIVE === "true";
+  const [isLive, setIsLive] = useState<boolean | null>(null);
 
-  console.log("Site Live Status:", isLive);
-  console.log("Site Live Status:", process.env.VITE_PUBLIC_SITE_LIVE);
+  useEffect(() => {
+    const loadStatus = async () => {
+      try {
+        const res = await fetch("/api/site-status");
+        const data = await res.json();
+
+        setIsLive(data.live);
+      } catch (err) {
+        console.error(err);
+        setIsLive(false);
+      }
+    };
+
+    loadStatus();
+  }, []);
+
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
       {/* Upper ambient background light */}
