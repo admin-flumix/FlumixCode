@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export default function handler(req: any, res: any) {
+  console.log("Go Live API called");
   const file = path.join(process.cwd(), "public", "siteStatus.json");
 
   fs.writeFileSync(

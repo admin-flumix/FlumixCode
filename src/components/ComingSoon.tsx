@@ -13,7 +13,6 @@ export default function ComingSoon() {
         await fetch("/api/goLive", {
             method: "POST",
         });
-
         window.location.reload();
     };
 
