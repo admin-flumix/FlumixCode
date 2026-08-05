@@ -111,7 +111,7 @@ export default function App() {
   useEffect(() => {
     const loadStatus = async () => {
       try {
-        const res = await fetch("/api/site-status");
+        const res = await fetch("/api/goLive");
         const data = await res.json();
 
         setIsLive(data.live);
