@@ -43,12 +43,12 @@ export default async function handler(req: any, res: any) {
     await transporter.verify();
 
     await transporter.sendMail({
-      from: `Flumix <${process.env.GMAIL_USER}>`,
+      from: `Flumix Consultation <${process.env.GMAIL_USER}>`,
       to: process.env.SENDER_USER,
       subject: `[Consultation Request from Flumix]`,
       html: `
       <div style="font-family:Arial,sans-serif;color:#1e293b;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
-        <div style="background:#0f172a;padding:24px;text-align:center;">
+        <div style="background:#0f172a;padding:724px;text-align:center;">
           <h1 style="margin:0;color:#fff;">Flumix</h1>
           <p style="margin:6px 0 0;color:#60a5fa;">New Consultation Request</p>
         </div>
