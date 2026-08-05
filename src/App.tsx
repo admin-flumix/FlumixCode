@@ -106,7 +106,7 @@ export default function App() {
     }
   };
 
-  const [isLive, setIsLive] = useState<boolean | null>(null);
+  const [isLive, setIsLive] = useState<boolean | null>(false);
 
   useEffect(() => {
     const loadStatus = async () => {
