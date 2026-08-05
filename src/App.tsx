@@ -108,22 +108,6 @@ export default function App() {
 
   const [isLive, setIsLive] = useState<boolean | null>(false);
 
-  useEffect(() => {
-    const loadStatus = async () => {
-      try {
-        const res = await fetch("/api/goLive");
-        const data = await res.json();
-
-        setIsLive(data.live);
-      } catch (err) {
-        console.error(err);
-        setIsLive(false);
-      }
-    };
-
-    loadStatus();
-  }, []);
-
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
       {/* Upper ambient background light */}
