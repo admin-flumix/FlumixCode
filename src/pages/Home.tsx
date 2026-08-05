@@ -7,6 +7,7 @@ import TechEcosystem from '../components/TechEcosystem';
 import MathAnimation from '../components/MathAnimation';
 import { ArrowRight, Database, Cpu, Sparkles, BarChart3, Cloud, Users, ArrowUpRight, MessageSquare, Shield, Check, Calendar, Clock, Star, ShieldCheck, CheckCircle2, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
+import ComingSoon from '../components/ComingSoon';
 
 interface HomeProps {
   setCurrentPage: (page: PageId) => void;
@@ -164,7 +165,9 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
     localStorage.setItem('inputData',e);
   }
 
-  return (
+  const isLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
+  
+  return !isLive ? <ComingSoon /> : (
     <div className="relative overflow-hidden bg-slate-50 text-slate-800" id="home-page">
       {/* Background radial accent glow */}
       <div className="absolute -left-64 top-20 h-[500px] w-[500px] rounded-full bg-blue-100/30 glow-blur" />
