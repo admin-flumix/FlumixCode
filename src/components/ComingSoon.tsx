@@ -10,7 +10,7 @@ export default function ComingSoon() {
 
 
   const goLive = async () => {
-        await fetch("/api/go-live", {
+        await fetch("/api/goLive", {
             method: "POST",
         });
 

@@ -108,6 +108,14 @@ export default function App() {
 
   const [isLive, setIsLive] = useState(false);
 
+  useEffect(() => {
+    fetch("/api/siteStatus")
+        .then(res => res.json())
+        .then(data => {
+            setIsLive(data.live);
+        });
+  }, []);
+
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
       {/* Upper ambient background light */}
@@ -145,3 +153,7 @@ export default function App() {
     </div>
   );
 }
+function useEffect(arg0: () => void, arg1: never[]) {
+  throw new Error('Function not implemented.');
+}
+
