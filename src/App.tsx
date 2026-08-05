@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { PageId } from './types';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -152,8 +152,5 @@ export default function App() {
       <Footer setCurrentPage={setCurrentPage} />
     </div>
   );
-}
-function useEffect(arg0: () => void, arg1: never[]) {
-  throw new Error('Function not implemented.');
 }
 
