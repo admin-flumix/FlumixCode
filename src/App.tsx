@@ -24,6 +24,7 @@ import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import { Analytics } from '@vercel/analytics/next';
 import ComingSoon from './components/ComingSoon';
+import live from '../public/siteStatus.json';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
@@ -109,12 +110,11 @@ export default function App() {
   const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
-    fetch("/api/siteStatus")
-        .then(res => res.json())
-        .then(data => {
-            setIsLive(data.live);
-        });
+    const data = live;
+    setIsLive(data.live);
   }, []);
+
+  console.log("Site Live Status:", isLive);
 
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
