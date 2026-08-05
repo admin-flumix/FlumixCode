@@ -108,7 +108,9 @@ export default function Contact({ setCurrentPage }: ContactProps) {
                   <span className="block font-bold text-slate-900">Locations</span>
                   <p className="text-slate-600 mt-1 leading-relaxed">
                     London: <strong>Kemp House, 160 City Road,  London, EC1V 2NX</strong>
-                    India: <strong>Plot # A, 21, Lohia Rd, A Block, Sector 63, Noida, Uttar Pradesh 201309Plot # A, 21, Lohia Rd, A Block, Sector 63, Noida, Uttar Pradesh 201309</strong>
+                  </p>
+                  <p className="text-slate-600 mt-1 leading-relaxed">
+                    India: <strong>Plot # A, 21, Lohia Rd, A Block, Sector 63, Noida, Uttar Pradesh 201309</strong>
                   </p>
                 </div>
               </div>
