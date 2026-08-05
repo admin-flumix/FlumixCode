@@ -165,9 +165,7 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
     localStorage.setItem('inputData',e);
   }
 
-  const isLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
-  
-  return !isLive ? <ComingSoon /> : (
+  return (
     <div className="relative overflow-hidden bg-slate-50 text-slate-800" id="home-page">
       {/* Background radial accent glow */}
       <div className="absolute -left-64 top-20 h-[500px] w-[500px] rounded-full bg-blue-100/30 glow-blur" />
