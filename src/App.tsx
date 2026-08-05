@@ -106,10 +106,10 @@ export default function App() {
     }
   };
 
-  const isLive = process.env.PUBLIC_SITE_LIVE === "true";
+  const isLive = process.env.VITE_PUBLIC_SITE_LIVE === "true";
 
   console.log("Site Live Status:", isLive);
-  console.log("Site Live Status:", process.env.PUBLIC_SITE_LIVE);
+  console.log("Site Live Status:", process.env.VITE_PUBLIC_SITE_LIVE);
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
       {/* Upper ambient background light */}
