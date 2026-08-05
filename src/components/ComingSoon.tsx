@@ -8,6 +8,15 @@ export default function ComingSoon() {
     seconds: 0,
   });
 
+
+  const goLive = async () => {
+        await fetch("/api/go-live", {
+            method: "POST",
+        });
+
+        window.location.reload();
+    };
+
   useEffect(() => {
     const target = new Date();
     target.setDate(target.getDate() + 1);
@@ -82,6 +91,13 @@ export default function ComingSoon() {
         <span className="text-white text-5xl font-bold mt-8 block">
           Comming Soon
         </span>
+
+        <button
+            onClick={goLive}
+            className="mt-8 rounded-lg bg-cyan-500/10 px-6 py-3 text-sm font-semibold text-cyan-300 shadow-sm backdrop-blur hover:bg-cyan-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+            >
+            Go Live
+        </button>
 
         <p className="mt-12 text-sm text-slate-500">
           © 2026 Flumix. All rights reserved.

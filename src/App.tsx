@@ -106,7 +106,7 @@ export default function App() {
     }
   };
 
-  const isLive = process.env.NEXT_PUBLIC_SITE_LIVE === "true";
+  const [isLive, setIsLive] = useState(false);
 
   return !isLive ? <ComingSoon /> : (
     <div className={`flex min-h-screen flex-col transition-colors duration-300 ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`} id="app-root">
