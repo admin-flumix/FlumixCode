@@ -8,7 +8,8 @@ export default async function handler(req:any, res:any) {
     }
 
     const { firstName, lastName, email, jobTitle, projectOutline, recaptchaToken } = req.body;
-
+    
+    console.log({ firstName, lastName, email, jobTitle, projectOutline, recaptchaToken });
     try {
       const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
       if (!recaptchaResult.success) {
