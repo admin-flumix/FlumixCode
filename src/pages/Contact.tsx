@@ -26,6 +26,7 @@ export default function Contact({ setCurrentPage }: ContactProps) {
 
   const [isSubmitSuccess, setIsSubmitSuccess] = useState<boolean>(false);
   const [isSubmitStatus, setIsSubmitStatus] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [phone, setPhone] = useState("");
 
@@ -61,6 +62,7 @@ export default function Contact({ setCurrentPage }: ContactProps) {
     setIsSubmitting(true);
 
     try {
+      setSubmitError(null);
       const token = recaptchaToken || await recaptchaRef.current?.executeAsync();
       if (!token) {
         setRecaptchaError(true);
@@ -82,12 +84,14 @@ export default function Contact({ setCurrentPage }: ContactProps) {
         recaptchaRef.current?.reset();
         setRecaptchaToken(null);
       } else {
-        console.error('Contact submission failed status code:', response.status);
-        setIsSubmitSuccess(true); // Fallback to simulated success
+        const errorBody = await response.json().catch(() => null);
+        const message = errorBody?.error || `Submit failed with status ${response.status}`;
+        console.error('Contact submission failed:', response.status, errorBody);
+        setSubmitError(message);
       }
     } catch (err) {
       console.error('Error submitting contact form:', err);
-      setIsSubmitSuccess(true); // Fallback to simulated success
+      setSubmitError(String(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -343,6 +347,9 @@ export default function Contact({ setCurrentPage }: ContactProps) {
                         </>
                       )}
                     </button>
+                    {submitError && (
+                      <p className="text-red-500 text-3xs mt-2">{submitError}</p>
+                    )}
                   </motion.form>
                 ) : (
                   /* Success Calendar mapping */

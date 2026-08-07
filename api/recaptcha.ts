@@ -13,34 +13,60 @@ export async function verifyRecaptchaToken(token?: string | null): Promise<Recap
   console.log("Verifying reCAPTCHA token:", secret ? "[REDACTED]" : "not set", token ? "[REDACTED]" : "not provided");
 
   if (!secret) {
-    throw new Error('RECAPTCHA_SECRET_KEY is not configured. Add this environment variable to enable server-side reCAPTCHA verification.');
+    return {
+      success: false,
+      'error-codes': ['missing-input-secret'],
+      hostname: undefined,
+      score: 0,
+      action: undefined,
+    };
   }
 
   if (!token) {
     return {
       success: false,
       'error-codes': ['missing-input-response'],
+      hostname: undefined,
+      score: 0,
+      action: undefined,
     };
   }
 
-  const params = new URLSearchParams({
-    secret,
-    response: token,
-  });
+  try {
+    const params = new URLSearchParams({
+      secret,
+      response: token,
+    });
 
-  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params.toString(),
-  });
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
+    });
 
-  if (!response.ok) {
-    throw new Error(`reCAPTCHA verification request failed with status ${response.status}`);
+    if (!response.ok) {
+      return {
+        success: false,
+        'error-codes': ['verification-request-failed'],
+        hostname: undefined,
+        score: 0,
+        action: undefined,
+      };
+    }
+
+    const data = (await response.json()) as RecaptchaVerifyResponse;
+    console.log('reCAPTCHA verification response:', data);
+    return data;
+  } catch (error: any) {
+    console.error('[recaptcha] network or fetch error:', error);
+    return {
+      success: false,
+      'error-codes': ['verification-request-error'],
+      hostname: undefined,
+      score: 0,
+      action: undefined,
+    };
   }
-
-  const data = (await response.json()) as RecaptchaVerifyResponse;
-  console.log('reCAPTCHA verification response:', data);
-  return data;
 }

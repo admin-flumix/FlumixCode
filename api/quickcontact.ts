@@ -4,6 +4,12 @@ import { verifyRecaptchaToken } from './recaptcha';
 // 4. Quick Consultation Request (Home Page Block) Form Submission
 export default async function handler(req:any, res:any) {
     console.log("Received quick consultation request:", req.body);
+    console.log("quickcontact env:", {
+      secretConfigured: Boolean(process.env.RECAPTCHA_SECRET_KEY),
+      gmailConfigured: Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD),
+      senderConfigured: Boolean(process.env.SENDER_USER),
+    });
+
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }

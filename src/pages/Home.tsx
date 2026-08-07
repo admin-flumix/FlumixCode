@@ -19,6 +19,7 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
   const [isEnquirySubmitted, setIsEnquirySubmitted] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
+  const [quickSubmitError, setQuickSubmitError] = React.useState<string | null>(null);
   const quickCaptchaRef = useRef<GoogleRecaptchaFieldHandle | null>(null);
   const [quickRecaptchaToken, setQuickRecaptchaToken] = React.useState<string | null>(null);
   const [quickRecaptchaError, setQuickRecaptchaError] = React.useState(false);
@@ -35,6 +36,7 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
 
   const handleQuickSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setQuickSubmitError(null);
     setIsSubmitting(true);
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -69,12 +71,14 @@ const captchaToken = quickRecaptchaToken || await quickCaptchaRef.current?.execu
         quickCaptchaRef.current?.reset();
         setQuickRecaptchaToken(null);
       } else {
-        console.error('Quick contact submission failed:', response.status);
-        setIsEnquirySubmitted(true); // Fallback to simulated success
+        const errorBody = await response.json().catch(() => null);
+        const message = errorBody?.error || `Submission failed with status ${response.status}`;
+        console.error('Quick contact submission failed:', response.status, errorBody);
+        setQuickSubmitError(message);
       }
     } catch (err) {
       console.error('Error submitting quick contact:', err);
-      setIsEnquirySubmitted(true); // Fallback to simulated success
+      setQuickSubmitError(String(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -907,6 +911,9 @@ const captchaToken = quickRecaptchaToken || await quickCaptchaRef.current?.execu
                         </>
                       )}
                     </button>
+                    {quickSubmitError && (
+                      <p className="text-red-500 text-3xs mt-2">{quickSubmitError}</p>
+                    )}
                   </form>
                 )}
               </div>

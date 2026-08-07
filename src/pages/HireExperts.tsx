@@ -27,6 +27,7 @@ export default function HireExperts({ setCurrentPage, onOpenConsultation }: Hire
   // Inquiry submit state
   const [inquirySent, setInquirySent] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [clientName, setClientName] = useState<string>('');
   const [clientEmail, setClientEmail] = useState<string>('');
   const expertCaptchaRef = useRef<GoogleRecaptchaFieldHandle | null>(null);
@@ -93,6 +94,7 @@ export default function HireExperts({ setCurrentPage, onOpenConsultation }: Hire
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     setIsSubmitting(true);
     try {
       const token = expertRecaptchaToken || await expertCaptchaRef.current?.executeAsync();
@@ -127,12 +129,14 @@ export default function HireExperts({ setCurrentPage, onOpenConsultation }: Hire
         expertCaptchaRef.current?.reset();
         setExpertRecaptchaToken(null);
       } else {
-        console.error('Squad booking inquiry failed status code:', response.status);
-        setInquirySent(true); // Fallback to simulated success
+        const errorBody = await response.json().catch(() => null);
+        const message = errorBody?.error || `Submission failed with status ${response.status}`;
+        console.error('Squad booking inquiry failed:', response.status, errorBody);
+        setSubmitError(message);
       }
     } catch (err) {
       console.error('Error submitting squad inquiry:', err);
-      setInquirySent(true); // Fallback to simulated success
+      setSubmitError(String(err));
     } finally {
       setIsSubmitting(false);
     }
