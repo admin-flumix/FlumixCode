@@ -134,11 +134,14 @@ export default function Footer({ setCurrentPage }: FooterProps) {
   };
 
   const handleNavClick = (pageId: PageId) => {
-    const [pageCall, sectionId] = pageId.split("?");
+    const splitResult = pageId.split("?") as [string, string?];
+    const pageCall = splitResult[0] as PageId;
+    const sectionId = splitResult[1];
     setCurrentPage(pageCall);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     setTimeout(()=>{
+      if (!sectionId) return;
       const section = document.getElementById(sectionId);
       
       section?.scrollIntoView({

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PageId, ContactInquiry } from '../types';
 import { Mail, Phone, MapPin, ShieldAlert, CheckSquare, Sparkles, MessageSquare, Calendar, FileCheck, ArrowRight, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { validatePhone } from '../phonevalidation';
 import PhoneInput from "react-phone-input-2";
+import GoogleRecaptchaField, { GoogleRecaptchaFieldHandle } from '../components/GoogleRecaptchaField';
 
 interface ContactProps {
   setCurrentPage: (page: PageId) => void;
@@ -29,6 +30,19 @@ export default function Contact({ setCurrentPage }: ContactProps) {
   const [phone, setPhone] = useState("");
 
   const [phoneError, setPhoneError] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [recaptchaError, setRecaptchaError] = useState(false);
+  const recaptchaRef = useRef<GoogleRecaptchaFieldHandle | null>(null);
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+    setRecaptchaError(!token);
+  };
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null);
+    setRecaptchaError(true);
+  };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,21 +57,28 @@ export default function Contact({ setCurrentPage }: ContactProps) {
       return;
     }
 
+    if (!recaptchaToken) {
+      setRecaptchaError(true);
+      return;
+    }
+
     setPhoneError(false);
-    
+    setRecaptchaError(false);
     setIsSubmitting(true);
 
     try {
-      console.log(formData);
+      const payload = { ...formData, recaptchaToken };
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       if (response.ok) {
         setIsSubmitSuccess(true);
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
       } else {
         console.error('Contact submission failed status code:', response.status);
         setIsSubmitSuccess(true); // Fallback to simulated success
@@ -232,7 +253,6 @@ export default function Contact({ setCurrentPage }: ContactProps) {
                         <label className="block text-3xs font-mono uppercase text-slate-500 mb-1">Contact Number *</label>
                         <div className="flex flex-col">
                           <PhoneInput
-                            name="phone"
                             country={"gb"}
                             value={phone}
                             onChange={(value:any, country:any) => {
@@ -279,6 +299,19 @@ export default function Contact({ setCurrentPage }: ContactProps) {
                       />
                     </div>
 
+                    <div className="mt-4">
+                      <GoogleRecaptchaField
+                        ref={recaptchaRef}
+                        onChange={handleRecaptchaChange}
+                        onExpired={handleRecaptchaExpired}
+                      />
+                      {recaptchaError && (
+                        <p className="text-red-500 text-3xs mt-2">
+                          Please complete the reCAPTCHA to verify you are human.
+                        </p>
+                      )}
+                    </div>
+
                     {/* Commit checklist */}
                     <div className="rounded-xl hidden bg-slate-50 p-4 border border-slate-200 space-y-2">
                       <div className="flex items-center gap-2 text-3xs font-bold text-slate-900 uppercase tracking-wider font-mono">
@@ -293,7 +326,7 @@ export default function Contact({ setCurrentPage }: ContactProps) {
 
                     <button
                       type="submit"
-                      disabled={isSubmitStatus || isSubmitting || phoneError}
+                      disabled={isSubmitStatus || isSubmitting || phoneError || !recaptchaToken}
                       className="w-full rounded-full bg-gray-900 hover:bg-gray-500 disabled:bg-slate-300 disabled:cursor-not-allowed py-3.5 text-xs font-bold text-white shadow-lg shadow-blue-600/15 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       {isSubmitting ? (

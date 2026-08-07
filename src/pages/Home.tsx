@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { PageId } from '../types';
 import { SERVICES, CASE_STUDIES, BLOG_POSTS, TESTIMONIALS, EXPERTS } from '../data';
+import GoogleRecaptchaField, { GoogleRecaptchaFieldHandle } from '../components/GoogleRecaptchaField';
 import Stats from '../components/Stats';
 import Partners from '../components/Partners';
 import TechEcosystem from '../components/TechEcosystem';
@@ -18,14 +19,32 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
   const [isEnquirySubmitted, setIsEnquirySubmitted] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
+  const quickCaptchaRef = useRef<GoogleRecaptchaFieldHandle | null>(null);
+  const [quickRecaptchaToken, setQuickRecaptchaToken] = React.useState<string | null>(null);
+  const [quickRecaptchaError, setQuickRecaptchaError] = React.useState(false);
+
+  const handleQuickRecaptchaChange = (token: string | null) => {
+    setQuickRecaptchaToken(token);
+    setQuickRecaptchaError(!token);
+  };
+
+  const handleQuickRecaptchaExpired = () => {
+    setQuickRecaptchaToken(null);
+    setQuickRecaptchaError(true);
+  };
 
   const handleQuickSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!quickRecaptchaToken) {
+      setQuickRecaptchaError(true);
+      return;
+    }
     setIsSubmitting(true);
     const form = e.currentTarget;
     const formData = new FormData(form);
     
     const payload = {
+      recaptchaToken: quickRecaptchaToken,
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
       email: formData.get('email'),
@@ -44,6 +63,8 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
       if (response.ok) {
         setIsEnquirySubmitted(true);
         form.reset();
+        quickCaptchaRef.current?.reset();
+        setQuickRecaptchaToken(null);
       } else {
         console.error('Quick contact submission failed:', response.status);
         setIsEnquirySubmitted(true); // Fallback to simulated success
@@ -853,9 +874,22 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
                       />
                     </div>
 
+                    <div className="mt-4">
+                      <GoogleRecaptchaField
+                        ref={quickCaptchaRef}
+                        onChange={handleQuickRecaptchaChange}
+                        onExpired={handleQuickRecaptchaExpired}
+                      />
+                      {quickRecaptchaError && (
+                        <p className="text-red-500 text-3xs mt-2">
+                          Please complete the reCAPTCHA to verify you are human.
+                        </p>
+                      )}
+                    </div>
+
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !quickRecaptchaToken}
                       className="w-full py-3.5 bg-gray-900 hover:bg-gray-500 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-full text-sm font-semibold shadow-lg shadow-blue-600/15 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       {isSubmitting ? (

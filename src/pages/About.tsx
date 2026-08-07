@@ -31,9 +31,9 @@ interface AboutProps {
 
 export default function About({ setCurrentPage, onOpenConsultation }: AboutProps) {
   
-  let storeDataforContactUs = (e:any) =>{
-    localStorage.setItem('inputName','Page');
-    localStorage.setItem('inputData','About Us');
+  let storeDataforContactUs = (e?: any) =>{
+    localStorage.setItem('inputName', e ? 'Hire Expert' : 'Page');
+    localStorage.setItem('inputData', e ?? 'About Us');
   }
 
   const whatWeDoList = [

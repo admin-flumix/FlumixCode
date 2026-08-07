@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { verifyRecaptchaToken } from './recaptcha';
 
 // 4. Quick Consultation Request (Home Page Block) Form Submission
 export default async function handler(req:any, res:any) {
@@ -6,7 +7,16 @@ export default async function handler(req:any, res:any) {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { firstName, lastName, email, jobTitle, projectOutline } = req.body;
+    const { firstName, lastName, email, jobTitle, projectOutline, recaptchaToken } = req.body;
+
+    const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
+    if (!recaptchaResult.success) {
+      return res.status(400).json({
+        success: false,
+        error: 'reCAPTCHA verification failed',
+        details: recaptchaResult,
+      });
+    }
 
     const transporter = nodemailer.createTransport({
           service: "gmail",

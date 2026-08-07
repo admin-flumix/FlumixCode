@@ -73,7 +73,8 @@ export interface ContactInquiry {
   phone: string,
   inputName?: string,
   inputData?: string,
-  message: string
+  message: string,
+  recaptchaToken?: string | null,
 }
 
 export interface ExpertProfile {
