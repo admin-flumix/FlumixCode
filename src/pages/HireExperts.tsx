@@ -93,12 +93,14 @@ export default function HireExperts({ setCurrentPage, onOpenConsultation }: Hire
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!expertRecaptchaToken) {
-      setExpertRecaptchaError(true);
-      return;
-    }
     setIsSubmitting(true);
     try {
+      const token = expertRecaptchaToken || await expertCaptchaRef.current?.executeAsync();
+      if (!token) {
+        setExpertRecaptchaError(true);
+        setIsSubmitting(false);
+        return;
+      }
       const response = await fetch('/api/hire-experts', {
         method: 'POST',
         headers: {
@@ -109,7 +111,7 @@ export default function HireExperts({ setCurrentPage, onOpenConsultation }: Hire
           companyName,
           clientEmail,
           specialRequirements,
-          recaptchaToken: expertRecaptchaToken,
+          recaptchaToken: token,
           squadDetails: {
             dataEngineers,
             aiArchitects,

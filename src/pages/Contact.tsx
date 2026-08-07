@@ -57,17 +57,19 @@ export default function Contact({ setCurrentPage }: ContactProps) {
       return;
     }
 
-    if (!recaptchaToken) {
-      setRecaptchaError(true);
-      return;
-    }
-
     setPhoneError(false);
-    setRecaptchaError(false);
     setIsSubmitting(true);
 
     try {
-      const payload = { ...formData, recaptchaToken };
+      const token = recaptchaToken || await recaptchaRef.current?.executeAsync();
+      if (!token) {
+        setRecaptchaError(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      setRecaptchaError(false);
+      const payload = { ...formData, recaptchaToken: token };
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -326,7 +328,7 @@ export default function Contact({ setCurrentPage }: ContactProps) {
 
                     <button
                       type="submit"
-                      disabled={isSubmitStatus || isSubmitting || phoneError || !recaptchaToken}
+                      disabled={isSubmitStatus || isSubmitting || phoneError}
                       className="w-full rounded-full bg-gray-900 hover:bg-gray-500 disabled:bg-slate-300 disabled:cursor-not-allowed py-3.5 text-xs font-bold text-white shadow-lg shadow-blue-600/15 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       {isSubmitting ? (

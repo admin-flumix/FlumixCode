@@ -35,16 +35,19 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
 
   const handleQuickSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!quickRecaptchaToken) {
-      setQuickRecaptchaError(true);
-      return;
-    }
     setIsSubmitting(true);
     const form = e.currentTarget;
     const formData = new FormData(form);
     
-    const payload = {
-      recaptchaToken: quickRecaptchaToken,
+const captchaToken = quickRecaptchaToken || await quickCaptchaRef.current?.executeAsync();
+      if (!captchaToken) {
+        setQuickRecaptchaError(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      const payload = {
+        recaptchaToken: captchaToken,
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
       email: formData.get('email'),
@@ -889,7 +892,7 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
 
                     <button
                       type="submit"
-                      disabled={isSubmitting || !quickRecaptchaToken}
+                      disabled={isSubmitting}
                       className="w-full py-3.5 bg-gray-900 hover:bg-gray-500 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-full text-sm font-semibold shadow-lg shadow-blue-600/15 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       {isSubmitting ? (
