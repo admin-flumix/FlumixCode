@@ -11,8 +11,8 @@ interface CaseStudiesProps {
 
 export default function CaseStudies({ setCurrentPage, onOpenConsultation }: CaseStudiesProps) {
   let storeDataforContactUs = (e?: any) =>{
-    localStorage.setItem('inputName', e ? 'Case Study' : 'Page');
-    localStorage.setItem('inputData', e ?? 'Case Studies');
+    localStorage.setItem('inputName',e ? 'Case Study' : 'Page');
+    localStorage.setItem('inputData',e ? e : 'Case Studies');
   }
 
   const [activeStudyId, setActiveStudyId] = useState<string | null>(null);

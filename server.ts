@@ -3,10 +3,6 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import contactHandler from "./api/contact.ts";
-import quickContactHandler from "./api/quickcontact.ts";
-import hireExpertsHandler from "./api/hire-experts.ts";
-import healthRouter from "./api/health.ts";
 
 // Load environment variables
 dotenv.config();
@@ -21,12 +17,6 @@ const PORT = 3000;
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Mount API route handlers
-app.use(healthRouter);
-app.post('/api/contact', contactHandler);
-app.post('/api/quickcontact', quickContactHandler);
-app.post('/api/hire-experts', hireExpertsHandler);
 
 /**
  * Creates a Nodemailer transporter lazily when needed.

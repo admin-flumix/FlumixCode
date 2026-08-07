@@ -133,15 +133,13 @@ export default function Footer({ setCurrentPage }: FooterProps) {
     }
   };
 
-  const handleNavClick = (pageId: PageId) => {
-    const splitResult = pageId.split("?") as [string, string?];
-    const pageCall = splitResult[0] as PageId;
-    const sectionId = splitResult[1];
-    setCurrentPage(pageCall);
+  const handleNavClick = (pageId: PageId | string) => {
+    const [pageCall, sectionId] = pageId.split("?");
+    const normalizedPage = pageCall as PageId;
+    setCurrentPage(normalizedPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     setTimeout(()=>{
-      if (!sectionId) return;
       const section = document.getElementById(sectionId);
       
       section?.scrollIntoView({

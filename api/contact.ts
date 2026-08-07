@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { verifyRecaptchaToken } from './recaptcha.js';
+import { verifyRecaptchaToken } from "./lib/verifyRecaptcha";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -19,24 +19,6 @@ export default async function handler(req: any, res: any) {
     recaptchaToken,
   } = req.body;
 
-  try {
-    const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
-    if (!recaptchaResult.success) {
-      return res.status(400).json({
-        success: false,
-        error: 'reCAPTCHA verification failed',
-        details: recaptchaResult,
-      });
-    }
-  } catch (err: any) {
-    console.error('[recaptcha] verification error (contact):', err);
-    return res.status(500).json({
-      success: false,
-      error: 'reCAPTCHA verification error',
-      details: err?.message ?? String(err),
-    });
-  }
-
   // Validate required fields
   if (
     !firstname ||
@@ -48,6 +30,14 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({
       success: false,
       error: "Missing required fields",
+    });
+  }
+
+  const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
+  if (!recaptchaResult.ok) {
+    return res.status(400).json({
+      success: false,
+      error: recaptchaResult.error,
     });
   }
 

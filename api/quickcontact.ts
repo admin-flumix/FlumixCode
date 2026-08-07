@@ -1,39 +1,13 @@
 import nodemailer from "nodemailer";
-import { verifyRecaptchaToken } from './recaptcha.js';
+import { verifyRecaptchaToken } from "./lib/verifyRecaptcha";
 
 // 4. Quick Consultation Request (Home Page Block) Form Submission
 export default async function handler(req:any, res:any) {
-    console.log("Received quick consultation request:", req.body);
-    console.log("quickcontact env:", {
-      secretConfigured: Boolean(process.env.RECAPTCHA_SECRET_KEY),
-      gmailConfigured: Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD),
-      senderConfigured: Boolean(process.env.SENDER_USER),
-    });
-
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
 
     const { firstName, lastName, email, jobTitle, projectOutline, recaptchaToken } = req.body;
-    
-    console.log({ firstName, lastName, email, jobTitle, projectOutline, recaptchaToken });
-    try {
-      const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
-      if (!recaptchaResult.success) {
-        return res.status(400).json({
-          success: false,
-          error: 'reCAPTCHA verification failed',
-          details: recaptchaResult,
-        });
-      }
-    } catch (err: any) {
-      console.error('[recaptcha] verification error (quickcontact):', err);
-      return res.status(500).json({
-        success: false,
-        error: 'reCAPTCHA verification error',
-        details: err?.message ?? String(err),
-      });
-    }
 
     const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -46,6 +20,11 @@ export default async function handler(req:any, res:any) {
 
   if (!firstName || !lastName || !email || !jobTitle || !projectOutline) {
     return res.status(400).json({ error: "Missing required fields (firstName, lastName, email, jobTitle, projectOutline)" });
+  }
+
+  const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
+  if (!recaptchaResult.ok) {
+    return res.status(400).json({ success: false, error: recaptchaResult.error });
   }
 
   const emailHtml = `

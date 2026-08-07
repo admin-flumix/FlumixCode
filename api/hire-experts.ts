@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import { verifyRecaptchaToken } from './recaptcha.js';
 
 export default async function handler(req:any, res:any) {
     if (req.method !== "POST") {
@@ -12,26 +11,7 @@ export default async function handler(req:any, res:any) {
         clientEmail,
         specialRequirements,
         squadDetails,
-        recaptchaToken,
     } = req.body;
-
-    try {
-      const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
-      if (!recaptchaResult.success) {
-        return res.status(400).json({
-          success: false,
-          error: 'reCAPTCHA verification failed',
-          details: recaptchaResult,
-        });
-      }
-    } catch (err: any) {
-      console.error('[recaptcha] verification error (hire-experts):', err);
-      return res.status(500).json({
-        success: false,
-        error: 'reCAPTCHA verification error',
-        details: err?.message ?? String(err),
-      });
-    }
 
     if (!clientName || !clientEmail || !companyName) {
     return res.status(400).json({ error: "Missing required client details (name, email, company)" });
