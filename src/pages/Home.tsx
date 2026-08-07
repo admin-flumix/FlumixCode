@@ -7,7 +7,7 @@ import TechEcosystem from '../components/TechEcosystem';
 import MathAnimation from '../components/MathAnimation';
 import { ArrowRight, Database, Cpu, Sparkles, BarChart3, Cloud, Users, ArrowUpRight, MessageSquare, Shield, Check, Calendar, Clock, Star, ShieldCheck, CheckCircle2, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
-import GoogleRecaptcha from '../components/GoogleRecaptcha';
+import GoogleRecaptcha, { getRecaptchaToken } from '../components/GoogleRecaptcha';
 
 interface HomeProps {
   setCurrentPage: (page: PageId) => void;
@@ -22,14 +22,19 @@ export default function Home({ setCurrentPage, onOpenConsultation, theme = 'ligh
   const [recaptchaToken, setRecaptchaToken] = React.useState<string | null>(null);
   const [recaptchaError, setRecaptchaError] = React.useState('');
   const [recaptchaKey, setRecaptchaKey] = React.useState(0);
-  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
+  const recaptchaSiteKey = process.env.VITE_RECAPTCHA_SITE_KEY || '';
 
   const handleQuickSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (recaptchaSiteKey && !recaptchaToken) {
-      setRecaptchaError('Please complete the reCAPTCHA challenge.');
-      return;
+    if (recaptchaSiteKey) {
+      const token = recaptchaToken || (await getRecaptchaToken(recaptchaSiteKey, 'quick_contact_form'));
+      if (!token) {
+        setRecaptchaError('Unable to verify reCAPTCHA. Please try again.');
+        return;
+      }
+
+      setRecaptchaToken(token);
     }
 
     setRecaptchaError('');

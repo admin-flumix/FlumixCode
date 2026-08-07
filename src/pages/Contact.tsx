@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, ShieldAlert, CheckSquare, Sparkles, MessageSquare,
 import { motion, AnimatePresence } from 'motion/react';
 import { validatePhone } from '../phonevalidation';
 import PhoneInput from "react-phone-input-2";
-import GoogleRecaptcha from '../components/GoogleRecaptcha';
+import GoogleRecaptcha, { getRecaptchaToken } from '../components/GoogleRecaptcha';
 
 interface ContactProps {
   setCurrentPage: (page: PageId) => void;
@@ -33,7 +33,7 @@ export default function Contact({ setCurrentPage }: ContactProps) {
   const [recaptchaKey, setRecaptchaKey] = useState<number>(0);
 
   const [phoneError, setPhoneError] = useState(false);
-  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
+  const recaptchaSiteKey = process.env.VITE_RECAPTCHA_SITE_KEY || '';
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,9 +48,14 @@ export default function Contact({ setCurrentPage }: ContactProps) {
       return;
     }
 
-    if (recaptchaSiteKey && !recaptchaToken) {
-      setRecaptchaError('Please complete the reCAPTCHA challenge.');
-      return;
+    if (recaptchaSiteKey) {
+      const token = recaptchaToken || (await getRecaptchaToken(recaptchaSiteKey, 'contact_form'));
+      if (!token) {
+        setRecaptchaError('Unable to verify reCAPTCHA. Please try again.');
+        return;
+      }
+
+      setRecaptchaToken(token);
     }
 
     setPhoneError(false);
