@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { verifyRecaptchaToken } from './recaptcha';
+import { verifyRecaptchaToken } from './recaptcha.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {

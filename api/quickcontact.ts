@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { verifyRecaptchaToken } from './recaptcha';
+import { verifyRecaptchaToken } from './recaptcha.js';
 
 // 4. Quick Consultation Request (Home Page Block) Form Submission
 export default async function handler(req:any, res:any) {
