@@ -108,7 +108,7 @@ const GoogleRecaptchaField = React.forwardRef<GoogleRecaptchaFieldHandle, Google
   return (
     <div className="text-2xs text-slate-500">
       {ready ? (
-        <span>reCAPTCHA v3 is ready.</span>
+        <span></span>
       ) : (
         <span>Loading reCAPTCHA...</span>
       )}
