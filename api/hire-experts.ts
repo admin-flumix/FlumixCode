@@ -15,12 +15,21 @@ export default async function handler(req:any, res:any) {
         recaptchaToken,
     } = req.body;
 
-    const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
-    if (!recaptchaResult.success) {
-      return res.status(400).json({
+    try {
+      const recaptchaResult = await verifyRecaptchaToken(recaptchaToken);
+      if (!recaptchaResult.success) {
+        return res.status(400).json({
+          success: false,
+          error: 'reCAPTCHA verification failed',
+          details: recaptchaResult,
+        });
+      }
+    } catch (err: any) {
+      console.error('[recaptcha] verification error (hire-experts):', err);
+      return res.status(500).json({
         success: false,
-        error: 'reCAPTCHA verification failed',
-        details: recaptchaResult,
+        error: 'reCAPTCHA verification error',
+        details: err?.message ?? String(err),
       });
     }
 
