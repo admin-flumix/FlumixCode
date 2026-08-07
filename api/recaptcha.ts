@@ -10,6 +10,8 @@ export interface RecaptchaVerifyResponse {
 export async function verifyRecaptchaToken(token?: string | null): Promise<RecaptchaVerifyResponse> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
 
+  console.log("Verifying reCAPTCHA token:", secret ? "[REDACTED]" : "not set", token ? "[REDACTED]" : "not provided");
+
   if (!secret) {
     throw new Error('RECAPTCHA_SECRET_KEY is not configured. Add this environment variable to enable server-side reCAPTCHA verification.');
   }
@@ -39,5 +41,6 @@ export async function verifyRecaptchaToken(token?: string | null): Promise<Recap
   }
 
   const data = (await response.json()) as RecaptchaVerifyResponse;
+  console.log('reCAPTCHA verification response:', data);
   return data;
 }

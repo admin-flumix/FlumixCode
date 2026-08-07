@@ -55,8 +55,9 @@ const GoogleRecaptchaField = React.forwardRef<GoogleRecaptchaFieldHandle, Google
           setReady(true);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         if (active) {
+          console.error('[reCAPTCHA] failed to load script', err);
           setReady(false);
         }
       });
