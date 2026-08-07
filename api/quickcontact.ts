@@ -3,6 +3,7 @@ import { verifyRecaptchaToken } from './recaptcha';
 
 // 4. Quick Consultation Request (Home Page Block) Form Submission
 export default async function handler(req:any, res:any) {
+    console.log("Received quick consultation request:", req.body);
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
